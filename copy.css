@@ -1,8 +1,8 @@
 .copy {
   /* button */
-  --button-bg: #353434;
-  --button-hover-bg: #464646;
-  --button-text-color: #CCCCCC;
+  --button-bg: #CCCCCC;
+  --button-hover-bg: #f4f3f3;
+  --button-text-color: #353434;
   --button-hover-text-color: #8bb9fe;
   --button-border-radius: 10px;
   --button-diameter: 36px;
