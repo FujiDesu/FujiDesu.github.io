@@ -5,3 +5,11 @@ new QRCode(document.getElementById("qrcode"), {
   colorDark: "#ffffff",
   colorLight: "transparent"
 });
+
+document.querySelectorAll('.copy').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const text = btn.dataset.copy;
+    navigator.clipboard.writeText(text);
+    btn.focus(); 
+  });
+});
