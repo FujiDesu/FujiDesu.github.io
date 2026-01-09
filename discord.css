@@ -1,0 +1,81 @@
+.button {
+  all: unset;
+  cursor: pointer;
+  border: none;
+  background: #5865f2;
+  color: #fff;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+  display: grid;
+  place-content: center;
+  transition:background 300ms, transform 200ms;
+  font-weight: 600;
+
+  /* เพิ่ม margin เพื่อให้อยู่กึ่งกลางใน card */
+  margin: 20px auto;
+}
+
+.button__text {
+  position: absolute;
+  inset: 0;
+  animation: text-rotation 8s linear infinite;
+  margin: 0; /* ลบ margin เริ่มต้นของ tag p */
+  text-transform: uppercase;
+
+  > span {
+    position: absolute;
+    transform: rotate(calc(24deg * var(--index))); 
+    inset: 8px;
+    font-size: 12px;
+  }
+}
+
+.button__circle {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  background: #212121;
+  color: #5865f2;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.button__icon--copy {
+  position: absolute;
+  transform: translate(-150%, 150%);
+}
+
+.button:hover {
+  background: #000;
+  transform: scale(1.05);
+}
+
+.button:hover .button__icon {
+  color: #fff;
+}
+
+.button:hover .button__icon:first-child {
+  transition: transform 0.3s ease-in-out;
+  transform: translate(150%, -150%);
+}
+
+.button:hover .button__icon--copy {
+  transition: transform 0.3s ease-in-out 0.1s;
+  transform: translate(0);
+}
+
+@keyframes text-rotation {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.button:active {
+  transform: scale(0.95);
+}

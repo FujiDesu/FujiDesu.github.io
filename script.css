@@ -1,0 +1,24 @@
+.scanner-line {
+    position: absolute;
+    top: -10%;
+    left: 0;
+    width: 100%;
+    height: 15px;
+    background: linear-gradient(to bottom, 
+        transparent, 
+        rgba(255, 255, 255, 0.8), 
+        transparent);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 1);
+    z-index: 10;
+    pointer-events: none;
+    
+    /* วิ่งรอบเดียว (1) และใช้ ease-in-out ให้ดูสมูท */
+    animation: scanOnce 2.5s ease-in-out forwards;
+}
+
+@keyframes scanOnce {
+    0% { top: -10%; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 110%; opacity: 0; }
+}
