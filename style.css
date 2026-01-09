@@ -137,6 +137,8 @@ body {
   backdrop-filter: blur(16px);
   /* ดึง z-index ขึ้นมาเพื่อให้เงาหรือขอบทับ content สนิท */
   z-index: 2; 
+  /* ป้องกันขอบล่างของ Tab โผล่มาเป็นเส้น */
+    border-bottom: none;
 }
 
 .tab-bar a.tab {
