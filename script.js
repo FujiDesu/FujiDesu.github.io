@@ -17,9 +17,8 @@ document.querySelectorAll('.copy').forEach(btn => {
 /*------------------------------------------------------------------------------------------------------------
   เอฟเฟค glitch
 ------------------------------------------------------------------------------------------------------------*/
-// ฟังก์ชันถอดรหัสตัวอักษร - ปรับให้รับค่าตรงๆ เพื่อความชัวร์
 const forceGlitch = (element) => {
-    const originalText = element.textContent.trim(); // ใช้ textContent แทน innerText เพื่อความแม่นยำ
+    const originalText = element.textContent.trim();
     if (!originalText) return;
 
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*";
@@ -38,21 +37,15 @@ const forceGlitch = (element) => {
     }, 30);
 }
 
-window.addEventListener('load', () => { // เปลี่ยนจาก DOMContentLoaded เป็น load เพื่อรอให้ทุกอย่างนิ่งก่อน
-    
-    // 1. จัดการข้อความทั่วไป (Tab, H1, H2, Contact)
+window.addEventListener('load', () => {
+    // 1. ประกาศตัวแปร card แค่ครั้งเดียว (แก้จุด Error)
+    const cardElement = document.querySelector('.card');
+
+    // 2. จัดการข้อความทั่วไป
     const mainTargets = document.querySelectorAll('.tab, .card-content h1, .card-content h2, .contact-row p, .contact-text');
     mainTargets.forEach(el => forceGlitch(el));
 
-    // 2. จัดการ Discord (กวาดทุก span ใน button__text)
-    // สาเหตุที่มันไม่ติดคราวที่แล้ว อาจเพราะ selector ไม่ลึกพอ เราจะกวาดใหม่
-    const discordLetters = document.querySelectorAll('.button__text span');
-    discordLetters.forEach(span => {
-        // บังคับให้ Glitch แม้จะเป็น span เล็กๆ
-        forceGlitch(span);
-    });
-
-    // 3. จัดการปุ่ม Social (Facebook, IG, GitHub)
+    // 3. จัดการปุ่ม Social (Icon ไม่หาย)
     const links = document.querySelectorAll('.link-btn');
     links.forEach(btn => {
         const textNode = Array.from(btn.childNodes).find(n => n.nodeType === 3 && n.textContent.trim());
@@ -70,58 +63,57 @@ window.addEventListener('load', () => { // เปลี่ยนจาก DOMCon
         }
     });
     
+    // 4. จัดการปุ่ม Discord
     const discordSpans = document.querySelectorAll('.button__text span, .button p span');
-    
-    if (discordSpans.length > 0) {
-        discordSpans.forEach((span) => {
-            const originalChar = span.textContent.trim();
-            if (!originalChar) return;
+    discordSpans.forEach((span) => {
+        const originalChar = span.textContent.trim();
+        if (!originalChar) return;
+        const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        let iteration = 0;
+        const discordInterval = setInterval(() => {
+            span.textContent = characters[Math.floor(Math.random() * characters.length)];
+            iteration += 1;
+            if (iteration > 20) { 
+                clearInterval(discordInterval);
+                span.textContent = originalChar;
+            }
+        }, 50);
+    });
 
-            const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            let iteration = 0;
-            
-            // ใช้ Interval แยกตัวใครตัวมันสำหรับแต่ละตัวอักษร
-            const discordInterval = setInterval(() => {
-                span.textContent = characters[Math.floor(Math.random() * characters.length)];
-                
-                iteration += 1;
-                
-                // หยุด Glitch เมื่อถึงจำนวนครั้งที่กำหนด (ประมาณ 1 วินาที)
-                if (iteration > 20) { 
-                    clearInterval(discordInterval);
-                    span.textContent = originalChar; // คืนค่าตัวอักษรจริง
-                }
-            }, 50); // ความเร็วในการเปลี่ยนตัวอักษร
-        });
-    }
-
-    //glitch qr code
+    // 5. Glitch QR Code (ประกอบร่าง)
     const qr = document.getElementById("qrcode");
     if (qr) {
         qr.classList.add('assembling');
         let progress = 0;
-        
-        // ค่อยๆ เพิ่มเปอร์เซ็นต์การโผล่ (จาก 0% ถึง 100%)
         const assembleInterval = setInterval(() => {
-            progress += 2; // ปรับความเร็วตรงนี้ (เลขน้อย = ช้าและเนียน)
+            progress += 2;
             qr.style.setProperty('--mask-p', progress + '%');
-            
             if (progress >= 100) {
                 clearInterval(assembleInterval);
-                // ล้างค่า mask ออกเมื่อประกอบเสร็จเพื่อให้สแกนติดง่าย
                 qr.style.webkitMaskImage = 'none';
                 qr.style.maskImage = 'none';
             }
-        }, 20); // วิ่งทุกๆ 20ms
+        }, 20);
     }
 
-    // Scanner Line ครั้งเดียว
-    const card = document.querySelector('.card');
-    if(card) {
+    // 6. Glitch Card สั่น (ใช้ตัวแปร cardElement ที่ประกาศไว้ข้างบน)
+    if (cardElement) {
+        cardElement.classList.add('card-boot-glitch');
+        setTimeout(() => {
+            cardElement.classList.remove('card-boot-glitch');
+        }, 1200);
+    }
+
+    // 7. Scanner Line (ใช้ตัวแปร cardElement)
+    if(cardElement) {
         const scanner = document.createElement('div');
-        scanner.className = 'scanner-line';
-        card.appendChild(scanner);
-        setTimeout(() => scanner.remove(), 2500);
+    scanner.className = 'scanner-line';
+    document.body.appendChild(scanner);
+
+    // ต้องให้เวลาลบ (Remove) มากกว่าหรือเท่ากับเวลา Animation (1.2s)
+    // ผมแนะนำให้ใส่ 1300 (1.3 วินาที) เพื่อให้เห็นเส้นมันวิ่งพ้นขอบล่างไปจริงๆ ก่อนลบ
+    setTimeout(() => {
+        scanner.remove();
+    }, 1300);
     }
 });
-

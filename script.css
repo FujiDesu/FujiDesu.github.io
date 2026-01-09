@@ -1,26 +1,24 @@
 .scanner-line {
-    position: absolute;
-    top: -10%;
+    position: fixed;
     left: 0;
     width: 100%;
-    height: 15px;
+    height: 12px;
     background: linear-gradient(to bottom, 
         transparent, 
-        rgba(255, 255, 255, 0.8), 
+        rgba(255, 255, 255, 0.9), 
         transparent);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 1);
-    z-index: 10;
+    box-shadow: 0 0 25px rgba(255, 255, 255, 1);
+    z-index: 9999;
     pointer-events: none;
-    
-    /* วิ่งรอบเดียว (1) และใช้ ease-in-out ให้ดูสมูท */
-    animation: scanOnce 2.5s ease-in-out forwards;
+    /* ปรับเป็น 1.2s ให้เท่ากับ Card สั่น และใช้ linear เพื่อความสม่ำเสมอ */
+    animation: scanOnce 1.2s linear forwards; 
 }
 
 @keyframes scanOnce {
-    0% { top: -10%; opacity: 0; }
+    0% { top: -10vh; opacity: 0; }
     10% { opacity: 1; }
     90% { opacity: 1; }
-    100% { top: 110%; opacity: 0; }
+    100% { top: 110vh; opacity: 0; }
 }
 
 #qrcode {
@@ -41,3 +39,17 @@
     mask-image: linear-gradient(to bottom, black var(--mask-p, 0%), transparent var(--mask-p, 0%));
     -webkit-mask-image: linear-gradient(to bottom, black var(--mask-p, 0%), transparent var(--mask-p, 0%));
 }   
+
+/* เอฟเฟกต์ Card สั่นตอนเริ่ม */
+.card-boot-glitch {
+    animation: card-shake 0.4s ease-in-out 3; /* สั่น 3 รอบ */
+}
+
+@keyframes card-shake {
+    0% { transform: translate(0, 0) scale(1); filter: brightness(1); }
+    20% { transform: translate(-3px, 2px) scale(1.01); filter: brightness(1.2) hue-rotate(10deg); }
+    40% { transform: translate(3px, -2px) scale(0.99); filter: contrast(1.2); }
+    60% { transform: translate(-2px, -2px); filter: brightness(1.1); }
+    80% { transform: translate(2px, 2px); }
+    100% { transform: translate(0, 0) scale(1); filter: brightness(1); }
+}
