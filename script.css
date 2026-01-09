@@ -22,3 +22,22 @@
     90% { opacity: 1; }
     100% { top: 110%; opacity: 0; }
 }
+
+#qrcode {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin: 20px auto;
+    /* เริ่มต้นด้วยการซ่อนและทำเป็นจุดๆ */
+    opacity: 0;
+    filter: brightness(3) blur(5px);
+    transition: all 1.2s ease-out;
+}
+
+#qrcode.assembling {
+    opacity: 1;
+    filter: brightness(1) blur(0);
+    /* เอฟเฟกต์ม่านพิกเซลเปิดตัว */
+    mask-image: linear-gradient(to bottom, black var(--mask-p, 0%), transparent var(--mask-p, 0%));
+    -webkit-mask-image: linear-gradient(to bottom, black var(--mask-p, 0%), transparent var(--mask-p, 0%));
+}   
