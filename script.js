@@ -33,8 +33,10 @@ const forceGlitch = (element) => {
             }).join("");
         
         if(iteration >= originalText.length) clearInterval(interval);
-        iteration += 1 / 3;
-    }, 30);
+        
+        // ปรับให้กวาดตัวอักษรไวขึ้น (จาก 1/3 เป็น 1/2.25)
+        iteration += 1 / 2.5; 
+    }, 25); // ปรับจาก 30ms เหลือ 22ms (เร็วขึ้นประมาณ 25%)
 }
 
 window.addEventListener('load', () => {
@@ -77,7 +79,7 @@ window.addEventListener('load', () => {
                 clearInterval(discordInterval);
                 span.textContent = originalChar;
             }
-        }, 50);
+        }, 45); //ปรับความเร็วในการ glitch
     });
 
     // 5. Glitch QR Code (ประกอบร่าง)
@@ -85,15 +87,16 @@ window.addEventListener('load', () => {
     if (qr) {
         qr.classList.add('assembling');
         let progress = 0;
+        // ปรับเพิ่ม progress ให้ไวขึ้น (จาก 2 เป็น 4) และลดเวลา interval เหลือ 10ms
         const assembleInterval = setInterval(() => {
-            progress += 2;
+            progress += 4; 
             qr.style.setProperty('--mask-p', progress + '%');
             if (progress >= 100) {
                 clearInterval(assembleInterval);
                 qr.style.webkitMaskImage = 'none';
                 qr.style.maskImage = 'none';
             }
-        }, 20);
+        }, 10); 
     }
 
     // 6. Glitch Card สั่น (ใช้ตัวแปร cardElement ที่ประกาศไว้ข้างบน)
@@ -101,7 +104,7 @@ window.addEventListener('load', () => {
         cardElement.classList.add('card-boot-glitch');
         setTimeout(() => {
             cardElement.classList.remove('card-boot-glitch');
-        }, 1200);
+        }, 600); 
     }
 
     // 7. Scanner Line (ใช้ตัวแปร cardElement)
@@ -109,11 +112,8 @@ window.addEventListener('load', () => {
         const scanner = document.createElement('div');
     scanner.className = 'scanner-line';
     document.body.appendChild(scanner);
-
-    // ต้องให้เวลาลบ (Remove) มากกว่าหรือเท่ากับเวลา Animation (1.2s)
-    // ผมแนะนำให้ใส่ 1300 (1.3 วินาที) เพื่อให้เห็นเส้นมันวิ่งพ้นขอบล่างไปจริงๆ ก่อนลบ
     setTimeout(() => {
         scanner.remove();
-    }, 1300);
+    }, 650);
     }
 });

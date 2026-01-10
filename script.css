@@ -10,8 +10,7 @@
     box-shadow: 0 0 25px rgba(255, 255, 255, 1);
     z-index: 9999;
     pointer-events: none;
-    /* ปรับเป็น 1.2s ให้เท่ากับ Card สั่น และใช้ linear เพื่อความสม่ำเสมอ */
-    animation: scanOnce 1.2s linear forwards; 
+    animation: scanOnce 0.6s linear forwards;
 }
 
 @keyframes scanOnce {
@@ -29,7 +28,7 @@
     /* เริ่มต้นด้วยการซ่อนและทำเป็นจุดๆ */
     opacity: 0;
     filter: brightness(3) blur(5px);
-    transition: all 1.2s ease-out;
+    transition: all 0.6s ease-out;
 }
 
 #qrcode.assembling {
@@ -42,7 +41,7 @@
 
 /* เอฟเฟกต์ Card สั่นตอนเริ่ม */
 .card-boot-glitch {
-    animation: card-shake 0.4s ease-in-out 3; /* สั่น 3 รอบ */
+    animation: card-shake 0.2s ease-in-out 3;
 }
 
 @keyframes card-shake {
