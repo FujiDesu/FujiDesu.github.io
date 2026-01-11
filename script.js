@@ -1,11 +1,20 @@
-new QRCode(document.getElementById("qrcode"), {
-    text: window.location.href,
-    width: 160,
-    height: 160,
-    colorDark: "#ffffff",
-    colorLight: "transparent"
-});
+/*------------------------------------------------------------------------------------------------------------
+  ส่วนของ QR Code (เฉพาะหน้าแรก)
+------------------------------------------------------------------------------------------------------------*/
+const qrDiv = document.getElementById("qrcode");
+if (qrDiv) {
+    new QRCode(qrDiv, {
+        text: window.location.href,
+        width: 160,
+        height: 160,
+        colorDark: "#ffffff",
+        colorLight: "transparent"
+    });
+}
 
+/*------------------------------------------------------------------------------------------------------------
+  ฟังก์ชัน Copy (เฉพาะหน้าที่มีปุ่ม copy)
+------------------------------------------------------------------------------------------------------------*/
 document.querySelectorAll('.copy').forEach(btn => {
     btn.addEventListener('click', () => {
         const text = btn.dataset.copy;
@@ -15,9 +24,10 @@ document.querySelectorAll('.copy').forEach(btn => {
 });
 
 /*------------------------------------------------------------------------------------------------------------
-  เอฟเฟค glitch
+  ระบบ Glitch (รันทุกหน้า)
 ------------------------------------------------------------------------------------------------------------*/
 const forceGlitch = (element) => {
+    if (!element) return;
     const originalText = element.textContent.trim();
     if (!originalText) return;
 
@@ -34,20 +44,20 @@ const forceGlitch = (element) => {
         
         if(iteration >= originalText.length) clearInterval(interval);
         
-        // ปรับให้กวาดตัวอักษรไวขึ้น (จาก 1/3 เป็น 1/2.25)
-        iteration += 1 / 2.5; 
-    }, 25); // ปรับจาก 30ms เหลือ 22ms (เร็วขึ้นประมาณ 25%)
+        // ปรับตรงนี้: ยิ่งเลขน้อย ยิ่งจบไว (เพราะหนึ่งรอบมันจะ "คืนค่าจริง" หลายตัวอักษรพร้อมกัน)
+        // จากเดิม 1 / 2.5 ให้ลองเปลี่ยนเป็น 1.5 หรือ 2 ไปเลยถ้าข้อความยาวมาก
+        iteration += 2; 
+    }, 25); 
 }
 
 window.addEventListener('load', () => {
-    // 1. ประกาศตัวแปร card แค่ครั้งเดียว (แก้จุด Error)
     const cardElement = document.querySelector('.card');
 
-    // 2. จัดการข้อความทั่วไป
-    const mainTargets = document.querySelectorAll('.tab, .card-content h1, .card-content h2, .contact-row p, .contact-text');
+    // 1. กระตุ้นข้อความ Glitch (กวาดทุกอย่างที่เจอในหน้านั้น)
+    const mainTargets = document.querySelectorAll('.tab, .card-content h1, .card-content h2, .contact-row p, .contact-text, .bio');
     mainTargets.forEach(el => forceGlitch(el));
 
-    // 3. จัดการปุ่ม Social (Icon ไม่หาย)
+    // 2. จัดการปุ่ม Social (ถ้ามี)
     const links = document.querySelectorAll('.link-btn');
     links.forEach(btn => {
         const textNode = Array.from(btn.childNodes).find(n => n.nodeType === 3 && n.textContent.trim());
@@ -60,60 +70,53 @@ window.addEventListener('load', () => {
                     return "ABCDEF012345"[Math.floor(Math.random() * 12)];
                 }).join("");
                 if(iter >= original.length) clearInterval(linkInterval);
-                iter += 1/3;
-            }, 30);
+                iter += 1 / 2.5;
+            }, 25);
         }
     });
-    
-    // 4. จัดการปุ่ม Discord
+
+    // 3. จัดการ Discord (ถ้ามี)
     const discordSpans = document.querySelectorAll('.button__text span, .button p span');
     discordSpans.forEach((span) => {
         const originalChar = span.textContent.trim();
-        if (!originalChar) return;
         const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         let iteration = 0;
         const discordInterval = setInterval(() => {
             span.textContent = characters[Math.floor(Math.random() * characters.length)];
             iteration += 1;
-            if (iteration > 20) { 
+            if (iteration > 12) { 
                 clearInterval(discordInterval);
                 span.textContent = originalChar;
             }
-        }, 45); //ปรับความเร็วในการ glitch
+        }, 35);
     });
 
-    // 5. Glitch QR Code (ประกอบร่าง)
+    // 4. ประกอบร่าง QR Code (เฉพาะหน้าที่มี)
     const qr = document.getElementById("qrcode");
     if (qr) {
         qr.classList.add('assembling');
         let progress = 0;
-        // ปรับเพิ่ม progress ให้ไวขึ้น (จาก 2 เป็น 4) และลดเวลา interval เหลือ 10ms
         const assembleInterval = setInterval(() => {
-            progress += 4; 
+            progress += 4;
             qr.style.setProperty('--mask-p', progress + '%');
             if (progress >= 100) {
                 clearInterval(assembleInterval);
                 qr.style.webkitMaskImage = 'none';
                 qr.style.maskImage = 'none';
             }
-        }, 10); 
+        }, 10);
     }
 
-    // 6. Glitch Card สั่น (ใช้ตัวแปร cardElement ที่ประกาศไว้ข้างบน)
+    // 5. Card สั่น และ Scanner (รันทุกหน้าที่มี .card)
     if (cardElement) {
         cardElement.classList.add('card-boot-glitch');
         setTimeout(() => {
             cardElement.classList.remove('card-boot-glitch');
-        }, 600); 
-    }
+        }, 600);
 
-    // 7. Scanner Line (ใช้ตัวแปร cardElement)
-    if(cardElement) {
         const scanner = document.createElement('div');
-    scanner.className = 'scanner-line';
-    document.body.appendChild(scanner);
-    setTimeout(() => {
-        scanner.remove();
-    }, 650);
+        scanner.className = 'scanner-line';
+        document.body.appendChild(scanner);
+        setTimeout(() => scanner.remove(), 650);
     }
 });
